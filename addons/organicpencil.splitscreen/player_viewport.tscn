@@ -1,0 +1,6 @@
+[gd_scene format=2]
+
+[node name="Viewport" type="Viewport"]
+render_target_v_flip = true
+audio_listener_enable_3d = true
+
