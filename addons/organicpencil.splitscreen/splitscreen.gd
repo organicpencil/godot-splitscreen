@@ -53,7 +53,14 @@ func update_viewports():
 			render.update_viewport()
 
 func remove_player(player_number : int):
-	assert(_renders[player_number])
+	if player_number > 3 or player_number < 0:
+		push_warning("%d is not a valid player number. Possible values: 0, 1, 2, 3" % player_number)
+		return
+
+	if !_renders[player_number]:
+		push_warning("Player %d viewport does not exist" % player_number)
+		return
+
 	_renders[player_number].viewport.queue_free()
 	_renders[player_number].queue_free()
 	_renders[player_number] = null
