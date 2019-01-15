@@ -5,7 +5,7 @@ func _ready():
 		if i == 2: # Skip player 3 for no particular reason
 			continue
 
-		var viewport = $Splitscreen.add_player(i)
+		var render = $Splitscreen.add_player(i)
 		var cam = Camera.new()
-		viewport.add_child(cam)
+		render.viewport.add_child(cam)
 		cam.translation = Vector3(0, 0, 5)
