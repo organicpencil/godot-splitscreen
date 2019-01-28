@@ -12,7 +12,7 @@ export var vertical = true setget set_vertical
 signal update_viewports
 
 func _ready():
-	pass
+	get_tree().connect("screen_resized", self, "update_viewports")
 
 func add_player(player_number : int):
 	# Adds a new render overlay + viewport and returns the viewport. You must add the camera yourself.
@@ -48,9 +48,27 @@ func get_player(player_number : int):
 	return _renders[player_number]
 
 func update_viewports():
+	var size_x = OS.window_size.x
+	var size_y = OS.window_size.y
+	var size = null
+
+	if player_count == 1:
+		size = OS.window_size
+	elif player_count == 2:
+		if vertical:
+			size = Vector2(size_x / 2.0 - border_width / 2.0, size_y)
+		else:
+			size = Vector2(size_x, size_y / 2.0 - border_width / 2.0)
+	else:
+		size = Vector2(size_x / 2.0 - border_width / 2.0, size_y / 2.0 - border_width / 2.0)
+
 	for render in _renders:
 		if render:
-			render.update_viewport()
+			render.update_viewport(size)
+
+	yield(get_tree(), "idle_frame")
+	yield(get_tree(), "idle_frame")
+	emit_signal("update_viewports", size)
 
 func remove_player(player_number : int):
 	if player_number > 3 or player_number < 0:
