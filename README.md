@@ -1,7 +1,7 @@
 # godot-splitscreen
 This addon provides the boilerplate for a standard 1-4 player splitscreen viewport setup. It can add/remove players on-the-fly and responds to changes in window size.
 
-Made for Godot 3.1
+Supports Godot 3.2
 
 ## Usage
 First, instance `res://addons/organicpencil.splitscreen/splitscreen.tscn` somewhere in the tree.  

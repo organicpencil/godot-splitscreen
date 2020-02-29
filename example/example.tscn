@@ -5,9 +5,7 @@
 
 [sub_resource type="CubeMesh" id=1]
 
-
 [sub_resource type="SphereMesh" id=2]
-
 
 [node name="Example" type="Node"]
 script = ExtResource( 1 )
@@ -22,4 +20,3 @@ material/0 = null
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0, 0 )
 mesh = SubResource( 2 )
 material/0 = null
-
