@@ -6,13 +6,12 @@ const PLAYER_VIEWPORT_SCN = preload("player_viewport.tscn")
 var _renders = [null, null, null, null]
 var player_count = 0
 
-export var border_width = 4.0 setget set_border_width
-export var vertical = true setget set_vertical
-
-signal update_viewports
+@export var border_width = 4.0 : set = set_border_width
+@export var vertical = true :  set = set_vertical
+signal viewports_updated
 
 func _ready():
-	get_tree().connect("screen_resized", self, "update_viewports")
+	get_viewport().size_changed.connect(update_viewports)
 
 func add_player(player_number : int):
 	# Adds a new render overlay + viewport and returns the viewport. You must add the camera yourself.
@@ -29,8 +28,8 @@ func add_player(player_number : int):
 		push_error("Player %d viewport already exists" % player_number)
 		return
 
-	var render = PLAYER_RENDER_SCN.instance()
-	var viewport = PLAYER_VIEWPORT_SCN.instance()
+	var render = PLAYER_RENDER_SCN.instantiate()
+	var viewport = PLAYER_VIEWPORT_SCN.instantiate()
 	render.texture = viewport.get_texture()
 	render.viewport = viewport
 	render.player_number = player_number
@@ -48,12 +47,12 @@ func get_player(player_number : int):
 	return _renders[player_number]
 
 func update_viewports():
-	var size_x = OS.window_size.x
-	var size_y = OS.window_size.y
+	var size_x = DisplayServer.window_get_size().x
+	var size_y = DisplayServer.window_get_size().y
 	var size = null
 
 	if player_count == 1:
-		size = OS.window_size
+		size = DisplayServer.window_get_size()
 	elif player_count == 2:
 		if vertical:
 			size = Vector2(size_x / 2.0 - border_width / 2.0, size_y)
@@ -66,9 +65,11 @@ func update_viewports():
 		if render:
 			render.update_viewport(size)
 
-	yield(get_tree(), "idle_frame")
-	yield(get_tree(), "idle_frame")
-	emit_signal("update_viewports", size)
+	if is_inside_tree():
+		await get_tree().process_frame
+		await get_tree().process_frame
+
+	emit_signal("viewports_updated", size)
 
 func remove_player(player_number : int):
 	if player_number > 3 or player_number < 0:
